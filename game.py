@@ -1,4 +1,3 @@
-from email.errors import MisplacedEnvelopeHeaderDefect
 from enum import Enum
 import random
 import time
