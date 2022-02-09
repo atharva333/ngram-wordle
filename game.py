@@ -24,7 +24,16 @@ class WordleMatch:
         self.max_guesses = max_guesses
         self.word_list = word_list
 
-        self.guesses = 0 # Initialise guess counter
+        # Initialise guess counter
+        self.guesses = 0 
+        self.current_guess = None
+    
+    def play(self) -> None:
+        """
+        Play game, asking for user input
+        End when correct word guessed or max guesses reached
+        """
+        raise NotImplementedError
     
     def is_game_over(self) -> bool:
         """Check if game is over"""
@@ -37,7 +46,7 @@ class WordleMatch:
     
     def _check_word_exists(self, word:str) -> bool:
         """Check if word is in word list"""
-        raise NotImplementedError
+        return word in self.word_list
 
     def _compare_guess_to_target(self, guess:str, target:str) -> WordGuess:
         """Return list of each guessed letter"""
@@ -46,7 +55,20 @@ class WordleMatch:
     def __str__(self) -> str:
         return f"Game over: {self.is_game_over()}, guess {self.guesses} out of {self.max_guesses}"
 
+def read_word_file(filepath: str) -> List[str]:
+    """Read list of words from file"""
+    word_list = []
+    with open(filepath, "r") as f:
+        word_list = f.readlines()
+    
+    return word_list
+
 if __name__ == "__main__":
     
-    new_match = WordleMatch(max_guesses=4, word_list={"b"})
-    print(new_match)
+    filepath = "words.txt"
+    # Remove newline char and convert to set
+    words = set([word[:-1] for word in read_word_file(filepath=filepath)])
+    print(len(words))
+
+    new_match = WordleMatch(max_guesses=4, word_list={"b", "c"})
+    print(new_match._check_word_exists("c"))
