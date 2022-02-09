@@ -12,14 +12,13 @@ class WordGuess:
     def __init__(self, letters: List[LetterState]) -> None:
         self.guess_letters = letters
     
-    def is_correct(self) -> bool:
+    def is_all_correct(self) -> bool:
         """Return True if guess is all correct"""
-        raise NotImplementedError
+        return all(letter == LetterState.CORRECT for letter in self.guess_letters)
 
 class WordleMatch:
     """Class for playing one match"""
     def __init__(self, max_guesses: int, word_list: str) -> None:
-
         self.max_guesses = max_guesses
         self.word_list = word_list
     
