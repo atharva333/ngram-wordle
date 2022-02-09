@@ -37,7 +37,13 @@ class WordleMatch:
     
     def is_game_over(self) -> bool:
         """Check if game is over"""
-        raise NotImplementedError
+        if (self.current_guess is not None
+            and self.current_guess.is_all_correct):
+            return True
+        elif self.guesses >= self.max_guesses:
+            return True
+        else:
+            return False
     
     def make_guess(self, guess: str) -> None:
         """Register new guess, if word is in list"""
