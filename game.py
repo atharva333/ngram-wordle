@@ -2,6 +2,7 @@ from enum import Enum
 import random
 import time
 from typing import List, Set
+from rich import print
 
 class LetterState(Enum):
     UNKNOWN = 0
@@ -41,3 +42,11 @@ class WordleMatch:
     def _compare_guess_to_target(self, guess:str, target:str) -> WordGuess:
         """Return list of each guessed letter"""
         raise NotImplementedError
+
+    def __str__(self) -> str:
+        return f"Game over: {self.is_game_over()}, guess {self.guesses} out of {self.max_guesses}"
+
+if __name__ == "__main__":
+    
+    new_match = WordleMatch(max_guesses=4, word_list={"b"})
+    print(new_match)
