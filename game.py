@@ -18,7 +18,7 @@ class WordGuess:
 
 class WordleMatch:
     """Class for playing one match"""
-    def __init__(self, max_guesses: int, word_list: str) -> None:
+    def __init__(self, max_guesses: int, word_list: List[str]) -> None:
         self.max_guesses = max_guesses
         self.word_list = word_list
     
