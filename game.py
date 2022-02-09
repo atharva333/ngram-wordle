@@ -1,7 +1,7 @@
 from enum import Enum
 import random
 import time
-from typing import List
+from typing import List, Set
 
 class LetterState(Enum):
     UNKNOWN = 0
@@ -18,16 +18,20 @@ class WordGuess:
 
 class WordleMatch:
     """Class for playing one match"""
-    def __init__(self, max_guesses: int, word_list: List[str]) -> None:
+    def __init__(self, max_guesses: int, word_list: Set[str]) -> None:
+        
         self.max_guesses = max_guesses
         self.word_list = word_list
+
+        self.guesses = 0 # Initialise guess counter
     
     def is_game_over(self) -> bool:
         """Check if game is over"""
         raise NotImplementedError
     
     def make_guess(self, guess: str) -> None:
-        """Register new guess"""
+        """Register new guess, if word is in list"""
+        self.guesses += 1
         raise NotImplementedError
     
     def _check_word_exists(self, word:str) -> bool:
