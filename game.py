@@ -68,7 +68,13 @@ class WordleMatch:
             if char_guess == char_target:
                 word_guess_state.append(LetterState.CORRECT)
             elif char_guess in target:
-                word_guess_state.append(LetterState.MISPOSITIONED)
+                # Check if there is another occurrence of same char in word
+                char_occurrences = [idx for idx, char in enumerate(target) if char == char_guess]
+                if len(char_occurrences) > 1:
+                    # TODO: add check for other word check
+                    word_guess_state.append(LetterState.UNKNOWN)
+                else:
+                    word_guess_state.append(LetterState.MISPOSITIONED)
             else:
                 word_guess_state.append(LetterState.UNKNOWN)
         return WordGuess(guess, word_guess_state)
