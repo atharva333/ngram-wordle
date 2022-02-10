@@ -10,7 +10,7 @@ class LetterState(IntEnum):
     CORRECT = 2
 
 class WordGuess:
-    def __init__(self, letters, letters_state: List[LetterState]) -> None:
+    def __init__(self, letters: str, letters_state: List[LetterState]) -> None:
         self.guess_letters = letters
         self.guess_state = letters_state
         self.letter_colours = ["gray", "yellow", "green"]
@@ -59,9 +59,19 @@ class WordleMatch:
         self.guesses += 1
         raise NotImplementedError
     
-    def _compare_guess_to_target(self, guess:str, target:str) -> WordGuess:
+    @staticmethod
+    def _compare_guess_to_target(guess:str, target:str) -> WordGuess:
         """Return list of each guessed letter"""
-        raise NotImplementedError
+        word_guess_state = []
+        for char_guess, char_target in zip(guess, target):
+            print(f"{char_guess}, {char_target}")
+            if char_guess == char_target:
+                word_guess_state.append(LetterState.CORRECT)
+            elif char_guess in target:
+                word_guess_state.append(LetterState.MISPOSITIONED)
+            else:
+                word_guess_state.append(LetterState.UNKNOWN)
+        return WordGuess(guess, word_guess_state)
 
     def _check_word_exists(self, word:str) -> bool:
         """Check if word is in word list"""
@@ -80,7 +90,7 @@ def read_word_file(filepath: str) -> List[str]:
 
 if __name__ == "__main__":
     
-    filepath = "words.txt"
+    filepath = "words_2315.txt"
     # Remove newline char and convert to set
     words = set([word[:-1] for word in read_word_file(filepath=filepath)])
     print(len(words))
@@ -95,4 +105,4 @@ if __name__ == "__main__":
                 LetterState.CORRECT,
                 LetterState.CORRECT]
     r_guess = WordGuess(r_word, r_states)
-    print(f"{r_guess.is_all_correct()}")
+    print(f"{WordleMatch._compare_guess_to_target('eagle', 'empro')}")
