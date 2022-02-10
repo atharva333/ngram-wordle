@@ -17,13 +17,13 @@ class WordGuess:
 
     def is_all_correct(self) -> bool:
         """Return True if guess is all correct"""
-        return all(letter == LetterState.CORRECT for letter in self.guess_letters)
+        return all(letter == LetterState.CORRECT for letter in self.guess_state)
     
     def __str__(self) -> str:
         """Show word guess with print colours"""
         guess_str = ""
         for letter, state in zip(self.guess_letters, self.guess_state):
-            guess_str += f"[{self.letter_colours[int(state)]}]{letter.upper()}[/{self.letter_colours[int(state)]}] " 
+            guess_str += f"[{self.letter_colours[int(state)]}]{letter.upper()}[/{self.letter_colours[int(state)]}] "
         return guess_str
 
 class WordleMatch:
@@ -90,9 +90,9 @@ if __name__ == "__main__":
 
     r_word = "clear"
     r_states = [LetterState.CORRECT,
-                LetterState.MISPOSITIONED,
-                LetterState.MISPOSITIONED,
-                LetterState.UNKNOWN,
+                LetterState.CORRECT,
+                LetterState.CORRECT,
+                LetterState.CORRECT,
                 LetterState.CORRECT]
     r_guess = WordGuess(r_word, r_states)
-    print(f"{r_guess}")
+    print(f"{r_guess.is_all_correct()}")
