@@ -29,13 +29,16 @@ class WordGuess:
 class WordleMatch:
     """Class for playing one match"""
     def __init__(self, max_guesses: int, word_list: Set[str]) -> None:
-        
+        # Assign constructor variables
         self.max_guesses = max_guesses
         self.word_list = word_list
 
         # Initialise guess counter
         self.guesses = 0 
         self.current_guess = None
+
+        # Choose target word
+        self.target_word = "eagle"
     
     def play(self) -> None:
         """
@@ -56,27 +59,50 @@ class WordleMatch:
     
     def make_guess(self, guess: str) -> None:
         """Register new guess, if word is in list"""
-        self.guesses += 1
-        raise NotImplementedError
+        if guess in self.word_list:
+            self.guesses += 1
+
+            self.current_guess = self._compare_guess_to_target(guess, self.target_word)
+        else:
+            print(f"[red]Word not in list![/red]")
     
     @staticmethod
     def _compare_guess_to_target(guess:str, target:str) -> WordGuess:
         """Return list of each guessed letter"""
         word_guess_state = []
+        # Initially go through and check for correct letters
         for char_guess, char_target in zip(guess, target):
-            print(f"{char_guess}, {char_target}")
+            #print(f"{char_guess}, {char_target}")
             if char_guess == char_target:
                 word_guess_state.append(LetterState.CORRECT)
-            elif char_guess in target:
-                # Check if there is another occurrence of same char in word
-                char_occurrences = [idx for idx, char in enumerate(target) if char == char_guess]
-                if len(char_occurrences) > 1:
-                    # TODO: add check for other word check
-                    word_guess_state.append(LetterState.UNKNOWN)
-                else:
-                    word_guess_state.append(LetterState.MISPOSITIONED)
             else:
                 word_guess_state.append(LetterState.UNKNOWN)
+        
+        # Second pass to assign check for mispositioned letters
+        for idx, (char_guess, char_target) in enumerate(zip(guess, target)):
+            
+            if char_guess == char_target:
+                continue
+            elif char_guess in target:
+                # Check if there is another occurrence of same char in guess
+                guess_occurrences = [idx for idx, char in enumerate(guess) if char == char_guess]
+                print(f"Guess char occurs for {char_guess}: {guess_occurrences}")
+                if len(guess_occurrences) == 1:
+                    word_guess_state[idx] = LetterState.MISPOSITIONED
+                else:
+                    # Check if there is another occurrence of same char in target
+                    target_occurrences = [idx for idx, char in enumerate(target) if char == char_guess]
+                    print(f"Target char occurs for {char_guess}: {target_occurrences}")
+                    
+                    # If this is the last idx for given letter and guess has more of same char than target
+                    if (len(target_occurrences) < len(guess_occurrences)) and (guess_occurrences[-1] == idx):
+                        continue
+
+                    # Assign mispositioned if the other guess isn't correct
+                    for targ_idx in target_occurrences:
+                        if (targ_idx != idx) and (word_guess_state[targ_idx] != LetterState.CORRECT):
+                            word_guess_state[idx] = LetterState.MISPOSITIONED
+        
         return WordGuess(guess, word_guess_state)
 
     def _check_word_exists(self, word:str) -> bool:
@@ -101,7 +127,7 @@ if __name__ == "__main__":
     words = set([word[:-1] for word in read_word_file(filepath=filepath)])
     print(len(words))
 
-    new_match = WordleMatch(max_guesses=4, word_list={"b", "c"})
+    new_match = WordleMatch(max_guesses=6, word_list=words)
     print(new_match._check_word_exists("c"))
 
     r_word = "clear"
@@ -111,4 +137,6 @@ if __name__ == "__main__":
                 LetterState.CORRECT,
                 LetterState.CORRECT]
     r_guess = WordGuess(r_word, r_states)
-    print(f"{WordleMatch._compare_guess_to_target('eagle', 'empro')}")
+    print(f"{WordleMatch._compare_guess_to_target('emmle', 'ecmel')}")
+
+    print(new_match.make_guess("eagle"))
