@@ -38,14 +38,20 @@ class WordleMatch:
         self.current_guess = None
 
         # Choose target word
-        self.target_word = "eagle"
+        self.target_word = random.choice(list(self.word_list))
+        print(self.target_word)
     
     def play(self) -> None:
         """
         Play game, asking for user input
         End when correct word guessed or max guesses reached
         """
-        raise NotImplementedError
+        
+        while not self.is_game_over():
+            guess_str = input()
+            self.make_guess(guess_str)
+
+        print(self)
     
     def is_game_over(self) -> bool:
         """Check if game is over"""
@@ -86,13 +92,13 @@ class WordleMatch:
             elif char_guess in target:
                 # Check if there is another occurrence of same char in guess
                 guess_occurrences = [idx for idx, char in enumerate(guess) if char == char_guess]
-                print(f"Guess char occurs for {char_guess}: {guess_occurrences}")
+                #print(f"Guess char occurs for {char_guess}: {guess_occurrences}")
                 if len(guess_occurrences) == 1:
                     word_guess_state[idx] = LetterState.MISPOSITIONED
                 else:
                     # Check if there is another occurrence of same char in target
                     target_occurrences = [idx for idx, char in enumerate(target) if char == char_guess]
-                    print(f"Target char occurs for {char_guess}: {target_occurrences}")
+                    #print(f"Target char occurs for {char_guess}: {target_occurrences}")
                     
                     # If this is the last idx for given letter and guess has more of same char than target
                     if (len(target_occurrences) < len(guess_occurrences)) and (guess_occurrences[-1] == idx):
@@ -139,4 +145,4 @@ if __name__ == "__main__":
     r_guess = WordGuess(r_word, r_states)
     print(f"{WordleMatch._compare_guess_to_target('emmle', 'ecmel')}")
 
-    print(new_match.make_guess("eagle"))
+    new_match.play()
