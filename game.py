@@ -135,7 +135,7 @@ def read_word_file(filepath: str) -> List[str]:
 
 if __name__ == "__main__":
     
-    filepath = "words_2315.txt"
+    filepath = "data/words_2315.txt"
     # Remove newline char and convert to set
     words = set([word[:-1] for word in read_word_file(filepath=filepath)])
     print(len(words))
