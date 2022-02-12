@@ -56,7 +56,7 @@ class WordleMatch:
     def is_game_over(self) -> bool:
         """Check if game is over"""
         if (self.current_guess is not None
-            and self.current_guess.is_all_correct):
+            and self.current_guess.is_all_correct()):
             return True
         elif self.guesses >= self.max_guesses:
             return True
@@ -67,8 +67,8 @@ class WordleMatch:
         """Register new guess, if word is in list"""
         if guess in self.word_list:
             self.guesses += 1
-
             self.current_guess = self._compare_guess_to_target(guess, self.target_word)
+            print(f"{self.current_guess}")
         else:
             print(f"[red]Word not in list![/red]")
     
@@ -134,15 +134,4 @@ if __name__ == "__main__":
     print(len(words))
 
     new_match = WordleMatch(max_guesses=6, word_list=words)
-    print(new_match._check_word_exists("c"))
-
-    r_word = "clear"
-    r_states = [LetterState.CORRECT,
-                LetterState.CORRECT,
-                LetterState.CORRECT,
-                LetterState.CORRECT,
-                LetterState.CORRECT]
-    r_guess = WordGuess(r_word, r_states)
-    print(f"{WordleMatch._compare_guess_to_target('emmle', 'ecmel')}")
-
     new_match.play()
