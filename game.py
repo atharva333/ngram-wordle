@@ -34,7 +34,8 @@ class WordleMatch:
         self.word_list = word_list
 
         # Initialise guess counter
-        self.guesses = 0 
+        self.guesses = 0
+        self.guess_list = []
         self.current_guess = None
 
         # Choose target word
@@ -50,8 +51,11 @@ class WordleMatch:
         while not self.is_game_over():
             guess_str = input()
             self.make_guess(guess_str)
-
         print(self)
+        print(f"Correct word: {self.target_word}")
+
+        if self.current_guess.is_all_correct():
+            print(f"[green]Congratulations you won![/green]")
     
     def is_game_over(self) -> bool:
         """Check if game is over"""
@@ -68,7 +72,10 @@ class WordleMatch:
         if guess in self.word_list:
             self.guesses += 1
             self.current_guess = self._compare_guess_to_target(guess, self.target_word)
-            print(f"{self.current_guess}")
+            self.guess_list.append(self.current_guess)
+
+            for guess in self.guess_list:
+                print(f"{guess}")
         else:
             print(f"[red]Word not in list![/red]")
     
