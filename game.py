@@ -1,6 +1,7 @@
-from enum import IntEnum
 import random
 import time
+from enum import IntEnum
+from util import read_word_file
 from typing import List, Set, Optional
 from rich import print
 
@@ -25,6 +26,10 @@ class WordGuess:
         for letter, state in zip(self.guess_letters, self.guess_state):
             guess_str += f"[{self.letter_colours[int(state)]}]{letter.upper()}[/{self.letter_colours[int(state)]}] "
         return guess_str
+
+    def _get_score(self) -> int:
+        """Return sum of all individual letters"""
+        return sum(self.guess_state)
 
 class WordleMatch:
     """Class for playing one match"""
@@ -67,11 +72,11 @@ class WordleMatch:
         else:
             return False
     
-    def make_guess(self, guess: str) -> Optional[WordGuess]:
+    def make_guess(self, guess: str) -> Optional[List[WordGuess]]:
         """Register new guess, if word is in list"""
         if self.is_game_over():
             return None
-            
+
         if guess in self.word_list:
             self.guesses += 1
             self.current_guess = self._compare_guess_to_target(guess, self.target_word)
@@ -129,14 +134,6 @@ class WordleMatch:
 
     def __str__(self) -> str:
         return f"Game over: {self.is_game_over()}, guess {self.guesses} out of {self.max_guesses}"
-
-def read_word_file(filepath: str) -> List[str]:
-    """Read list of words from file"""
-    word_list = []
-    with open(filepath, "r") as f:
-        word_list = f.readlines()
-    
-    return word_list
 
 if __name__ == "__main__":
     
