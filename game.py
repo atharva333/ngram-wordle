@@ -1,7 +1,7 @@
 from enum import IntEnum
 import random
 import time
-from typing import List, Set
+from typing import List, Set, Optional
 from rich import print
 
 class LetterState(IntEnum):
@@ -40,9 +40,9 @@ class WordleMatch:
 
         # Choose target word
         self.target_word = random.choice(list(self.word_list))
-        print(self.target_word)
+        #print(self.target_word)
     
-    def play(self) -> None:
+    def play_manual(self) -> None:
         """
         Play game, asking for user input
         End when correct word guessed or max guesses reached
@@ -67,8 +67,11 @@ class WordleMatch:
         else:
             return False
     
-    def make_guess(self, guess: str) -> None:
+    def make_guess(self, guess: str) -> Optional[WordGuess]:
         """Register new guess, if word is in list"""
+        if self.is_game_over():
+            return None
+            
         if guess in self.word_list:
             self.guesses += 1
             self.current_guess = self._compare_guess_to_target(guess, self.target_word)
@@ -76,6 +79,8 @@ class WordleMatch:
 
             for guess in self.guess_list:
                 print(f"{guess}")
+
+            return self.guess_list
         else:
             print(f"[red]Word not in list![/red]")
     
@@ -141,4 +146,4 @@ if __name__ == "__main__":
     print(len(words))
 
     new_match = WordleMatch(max_guesses=6, word_list=words)
-    new_match.play()
+    new_match.play_manual()
