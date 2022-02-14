@@ -6,10 +6,15 @@ from util import read_word_file
 class RandomSolver:
     def __init__(self, word_list: Set[str]) -> None:
         self.word_list = word_list
+        self.guess_list = []
 
     def create_guess(self) -> str:
         """Create random guess from word list"""
         return random.choice(list(self.word_list))
+
+    def add_guess(self, guess: WordGuess) -> None:
+        """Add guess to list of guesses"""
+        self.guess_list.append(guess)
 
 if __name__ == "__main__":
 
