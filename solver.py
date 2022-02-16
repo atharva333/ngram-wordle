@@ -27,7 +27,8 @@ class LetterMatchedSolver:
         if self.guess_list:
             last_guess = self.guess_list[-1]
             letter_positions = [(letter, position) for position, (letter, state) in enumerate(zip(last_guess.guess_letters, last_guess.guess_state)) if state == LetterState.CORRECT]
-            print(f"{letter_positions}")
+            mispositioned_letters = [letter for (letter, state) in zip(last_guess.guess_letters, last_guess.guess_state) if state == LetterState.MISPOSITIONED]
+            print(f"{letter_positions}, {mispositioned_letters}")
             
             letter_matched_list = []
             for word in self.word_list:
@@ -41,6 +42,10 @@ class LetterMatchedSolver:
                 for letter, position in letter_positions:
                     if word[position] != letter:
                         is_word_matched = False
+
+                # Check all mispositioned letters
+                if not all(letter in word for letter in mispositioned_letters):
+                    is_word_matched = False
                 
                 # Append if check passed
                 if is_word_matched:
