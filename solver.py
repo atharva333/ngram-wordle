@@ -17,7 +17,7 @@ class RandomSolver:
         """Add guess to list of guesses"""
         self.guess_list.append(guess)
 
-class LetterMatchedSolver:
+class LetterMatchedRandomSolver:
     def __init__(self, word_list: Set[str]) -> None:
         self.word_list = word_list
         self.guess_list = []
@@ -35,6 +35,10 @@ class LetterMatchedSolver:
                 
                 # Add error check for if word is too short
                 if len(word) != 5:
+                    continue
+
+                # Check if word is same as the last guess
+                if word == last_guess.guess_letters:
                     continue
 
                 # Check all letter in current word
@@ -72,7 +76,7 @@ if __name__ == "__main__":
     match = WordleMatch(max_guesses=6, word_list=words)
 
     # Create guesser
-    guesser = LetterMatchedSolver(words)
+    guesser = LetterMatchedRandomSolver(words)
 
     start_time = time.time()
     print(f"Start time: {start_time}")
@@ -88,6 +92,6 @@ if __name__ == "__main__":
             guesser.add_guess(guess)
 
     print(match.guess_list[-1]._get_score())
-    print(match)
+    print(f"Target word was: {match.target_word}")
 
     print(f"Time taken: {time.time() - start_time}")
