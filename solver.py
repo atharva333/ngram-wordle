@@ -50,7 +50,9 @@ class LetterMatchedSolver:
                 # Append if check passed
                 if is_word_matched:
                     letter_matched_list.append(word)
-
+            
+            print(f"Remaining possible words: {len(letter_matched_list)}")
+            # Return random word from filtered list
             return random.choice(letter_matched_list)
         else:
             return random.choice(list(self.word_list))
