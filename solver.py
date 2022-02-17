@@ -19,7 +19,7 @@ class RandomSolver:
 
 class LetterMatchedRandomSolver:
     def __init__(self, word_list: Set[str]) -> None:
-        self.word_list = word_list
+        self.remaining_word_list = list(word_list)
         self.guess_list = []
         #TODO: add permanent list for misposition letter positions
         self.incorrect_letters = set()
@@ -40,12 +40,12 @@ class LetterMatchedRandomSolver:
             incorrect_letters = {letter for letter, state in zip(last_guess.guess_letters, last_guess.guess_state) if (state == LetterState.UNKNOWN) and (letter not in correct_letters)}
             self.incorrect_letters = self.incorrect_letters | incorrect_letters
 
-            print(f"{letter_positions}, {mispositioned_letters}, {self.incorrect_letters}")
+            #print(f"{letter_positions}, {mispositioned_letters}, {self.incorrect_letters}")
             
             # TODO: Convert filtering into method
             # TODO: Use filter method with method 
             letter_matched_list = []
-            for word in self.word_list:
+            for word in self.remaining_word_list:
                 
                 # Add error check for if word is too short
                 if len(word) != 5:
@@ -78,11 +78,11 @@ class LetterMatchedRandomSolver:
                 if is_word_matched:
                     letter_matched_list.append(word)
             
-            print(f"Remaining possible words: {len(letter_matched_list)}")
-            # Return random word from filtered list
-            return random.choice(letter_matched_list)
-        else:
-            return random.choice(list(self.word_list))
+            #print(f"Remaining possible words: {len(letter_matched_list)}")
+            self.remaining_word_list = letter_matched_list
+            
+        # Return random word from filtered list
+        return random.choice(list(self.remaining_word_list))
 
     def add_guess(self, guess: WordGuess) -> None:
         """Add guess to list of guesses"""
