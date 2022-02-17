@@ -1,5 +1,6 @@
 import time
 import random
+import numpy as np
 from rich.progress import track
 from rich.console import Console
 
@@ -45,7 +46,9 @@ if __name__ == "__main__":
             # print(f"You won in {len(match.guess_list)} guesses")
             match_guesses.append(len(match.guess_list))
 
-
+    match_guesses = np.array(match_guesses)
     print(f"Won {len(match_guesses)} out of {NUMBER_OF_GAMES} matches")
-    print(f"Average number of guesse for win: {sum(match_guesses) / len(match_guesses)}")
+    print(f"Mean num guesses: {np.mean(match_guesses)}")
+    print(f"Num guesses standard deviation: {np.std(match_guesses)}")
+    print(np.histogram(match_guesses, bins=5))
     print(f"Time taken: {time.time() - start_time}")
