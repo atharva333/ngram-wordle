@@ -38,11 +38,8 @@ class WordleMatch:
         self.max_guesses = max_guesses
         self.word_list = word_list
 
-        # TODO: just use list to infer number of guesses and current guess
-        # Initialise guess counter
-        self.guesses = 0
+        # Initialise guess list
         self.guess_list = []
-        self.current_guess = None
 
         # Choose target word
         self.target_word = random.choice(list(self.word_list))
@@ -60,15 +57,15 @@ class WordleMatch:
         print(self)
         print(f"Correct word: {self.target_word}")
 
-        if self.current_guess.is_all_correct():
+        if self.guess_list[-1].is_all_correct():
             print(f"[green]Congratulations you won![/green]")
     
     def is_game_over(self) -> bool:
         """Check if game is over"""
-        if (self.current_guess is not None
-            and self.current_guess.is_all_correct()):
+        if (self.guess_list
+            and self.guess_list[-1].is_all_correct()):
             return True
-        elif self.guesses >= self.max_guesses:
+        elif len(self.guess_list) >= self.max_guesses:
             return True
         else:
             return False
@@ -79,9 +76,8 @@ class WordleMatch:
             return None
 
         if guess in self.word_list:
-            self.guesses += 1
-            self.current_guess = self._compare_guess_to_target(guess, self.target_word)
-            self.guess_list.append(self.current_guess)
+            current_guess = self._compare_guess_to_target(guess, self.target_word)
+            self.guess_list.append(current_guess)
 
             for guess in self.guess_list:
                 print(f"{guess}")
@@ -134,7 +130,7 @@ class WordleMatch:
         return word in self.word_list
 
     def __str__(self) -> str:
-        return f"Game over: {self.is_game_over()}, guess {self.guesses} out of {self.max_guesses}"
+        return f"Game over: {self.is_game_over()}, guess {len(self.guess_list)} out of {self.max_guesses}"
 
 if __name__ == "__main__":
     
