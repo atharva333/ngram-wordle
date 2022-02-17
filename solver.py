@@ -21,14 +21,23 @@ class LetterMatchedRandomSolver:
     def __init__(self, word_list: Set[str]) -> None:
         self.word_list = word_list
         self.guess_list = []
+        self.incorrect_letters = set()
 
     def create_guess(self) -> str:
         """Create guess from word list"""
         if self.guess_list:
             last_guess = self.guess_list[-1]
+            
             letter_positions = [(letter, position) for position, (letter, state) in enumerate(zip(last_guess.guess_letters, last_guess.guess_state)) if state == LetterState.CORRECT]
-            mispositioned_letters = [letter for (letter, state) in zip(last_guess.guess_letters, last_guess.guess_state) if state == LetterState.MISPOSITIONED]
-            print(f"{letter_positions}, {mispositioned_letters}")
+            correct_letters = {letter for letter, state in zip(last_guess.guess_letters, last_guess.guess_state) if (state == LetterState.CORRECT)}
+            
+            mispositioned_letters = [(letter, position) for position, (letter, state) in enumerate(zip(last_guess.guess_letters, last_guess.guess_state)) if state == LetterState.MISPOSITIONED]
+            correct_letters = correct_letters | {letter for letter, state in zip(last_guess.guess_letters, last_guess.guess_state) if (state == LetterState.MISPOSITIONED)}
+
+            incorrect_letters = {letter for letter, state in zip(last_guess.guess_letters, last_guess.guess_state) if (state == LetterState.UNKNOWN) and (letter not in correct_letters)}
+            self.incorrect_letters = self.incorrect_letters | incorrect_letters
+
+            print(f"{letter_positions}, {mispositioned_letters}, {self.incorrect_letters}")
             
             letter_matched_list = []
             for word in self.word_list:
@@ -48,7 +57,16 @@ class LetterMatchedRandomSolver:
                         is_word_matched = False
 
                 # Check all mispositioned letters
-                if not all(letter in word for letter in mispositioned_letters):
+                # if not all(letter in word for letter, position in mispositioned_letters):
+                #     is_word_matched = False
+                for letter, position in mispositioned_letters:
+                    if letter not in word:
+                        is_word_matched = False
+                    elif word[position] == letter:
+                        is_word_matched = False
+
+                # Check all incorrect letters
+                if any(letter in word for letter in self.incorrect_letters):
                     is_word_matched = False
                 
                 # Append if check passed
@@ -81,17 +99,22 @@ if __name__ == "__main__":
     start_time = time.time()
     print(f"Start time: {start_time}")
 
-    # Play game
-    while not match.is_game_over():
-        guess_str = guesser.create_guess()
-        print(guess_str)
-        guess = match.make_guess(guess_str)[-1]
-        #print(f"{guess}")
-        
-        if guess is not None:
-            guesser.add_guess(guess)
+    try:
+        # Play game
+        while not match.is_game_over():
+            guess_str = guesser.create_guess()
+            print(guess_str)
+            guess = match.make_guess(guess_str)[-1]
+            #print(f"{guess}")
+            
+            if guess is not None:
+                guesser.add_guess(guess)
+    except Exception as e:
+        print(e)
+        print(f"Target word was: {match.target_word}")
 
-    print(match.guess_list[-1]._get_score())
+    if match.guess_list[-1]._get_score() == 10:
+        print(f"You won in {len(match.guess_list)} guesses")
     print(f"Target word was: {match.target_word}")
 
     print(f"Time taken: {time.time() - start_time}")
