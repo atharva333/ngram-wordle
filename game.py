@@ -54,6 +54,10 @@ class WordleMatch:
         while not self.is_game_over():
             guess_str = input()
             self.make_guess(guess_str)
+
+            for guess in self.guess_list:
+                print(f"{guess}")
+                
         print(self)
         print(f"Correct word: {self.target_word}")
 
@@ -78,9 +82,6 @@ class WordleMatch:
         if guess in self.word_list:
             current_guess = self._compare_guess_to_target(guess, self.target_word)
             self.guess_list.append(current_guess)
-
-            for guess in self.guess_list:
-                print(f"{guess}")
 
             return self.guess_list
         else:
