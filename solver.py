@@ -21,6 +21,7 @@ class LetterMatchedRandomSolver:
     def __init__(self, word_list: Set[str]) -> None:
         self.word_list = word_list
         self.guess_list = []
+        #TODO: add permanent list for misposition letter positions
         self.incorrect_letters = set()
 
     def create_guess(self) -> str:
@@ -28,6 +29,8 @@ class LetterMatchedRandomSolver:
         if self.guess_list:
             last_guess = self.guess_list[-1]
             
+            # TODO: use dictionaries for letter and position
+            # TODO: remove using set and dict
             letter_positions = [(letter, position) for position, (letter, state) in enumerate(zip(last_guess.guess_letters, last_guess.guess_state)) if state == LetterState.CORRECT]
             correct_letters = {letter for letter, state in zip(last_guess.guess_letters, last_guess.guess_state) if (state == LetterState.CORRECT)}
             
@@ -39,6 +42,8 @@ class LetterMatchedRandomSolver:
 
             print(f"{letter_positions}, {mispositioned_letters}, {self.incorrect_letters}")
             
+            # TODO: Convert filtering into method
+            # TODO: Use filter method with method 
             letter_matched_list = []
             for word in self.word_list:
                 
@@ -99,6 +104,7 @@ if __name__ == "__main__":
     start_time = time.time()
     print(f"Start time: {start_time}")
 
+    # TODO: run games 1000s of times and work out average score and time
     try:
         # Play game
         while not match.is_game_over():

@@ -38,6 +38,7 @@ class WordleMatch:
         self.max_guesses = max_guesses
         self.word_list = word_list
 
+        # TODO: just use list to infer number of guesses and current guess
         # Initialise guess counter
         self.guesses = 0
         self.guess_list = []
