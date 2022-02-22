@@ -10,6 +10,7 @@ from util import read_word_file
 
 NUMBER_OF_GAMES = 5000
 
+
 def main():
 
     filepath = "data/words_2315.txt"
@@ -33,18 +34,22 @@ def main():
             # Play game
             while not match.is_game_over():
                 guess_str = guesser.create_guess()
-                #print(guess_str)
+                # print(guess_str)
                 guess = match.make_guess(guess_str)[-1]
-                #print(f"{guess}")
-                
+                # print(f"{guess}")
+
                 if guess is not None:
                     guesser.add_guess(guess)
         except Exception as e:
             print(e)
+            print(f"Word was: {match.target_word}")
 
         if match.guess_list[-1]._get_score() == 10:
             # print(f"You won in {len(match.guess_list)} guesses")
             match_guesses.append(len(match.guess_list))
+        # else:
+        #     print([word.guess_letters for word in match.guess_list])
+        #     print(match.target_word)
 
     match_guesses = np.array(match_guesses)
     print(f"Won {len(match_guesses)} out of {NUMBER_OF_GAMES} matches")
@@ -52,6 +57,7 @@ def main():
     print(f"Num guesses standard deviation: {np.std(match_guesses)}")
     print(np.histogram(match_guesses, bins=5))
     print(f"Time taken: {time.time() - start_time}")
+
 
 if __name__ == "__main__":
 
