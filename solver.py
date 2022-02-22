@@ -3,6 +3,9 @@ import time
 from typing import List, Set
 from game import LetterState, WordGuess, WordleMatch
 from util import read_word_file
+from rich import print
+from collections import defaultdict
+
 
 class RandomSolver:
     def __init__(self, word_list: Set[str]) -> None:
@@ -17,36 +20,47 @@ class RandomSolver:
         """Add guess to list of guesses"""
         self.guess_list.append(guess)
 
+
 class LetterMatchedRandomSolver:
     def __init__(self, word_list: Set[str]) -> None:
         self.remaining_word_list = list(word_list)
         self.guess_list = []
-        #TODO: add permanent list for misposition letter positions
+
+        self.correct_letters = defaultdict(int)
+        self.mispositioned_letters = defaultdict(list)
         self.incorrect_letters = set()
 
     def create_guess(self) -> str:
         """Create guess from word list"""
         if self.guess_list:
             last_guess = self.guess_list[-1]
-            
-            # TODO: use dictionaries for letter and position
-            # TODO: remove using set and dict
-            letter_positions = [(letter, position) for position, (letter, state) in enumerate(zip(last_guess.guess_letters, last_guess.guess_state)) if state == LetterState.CORRECT]
-            correct_letters = {letter for letter, state in zip(last_guess.guess_letters, last_guess.guess_state) if (state == LetterState.CORRECT)}
-            
-            mispositioned_letters = [(letter, position) for position, (letter, state) in enumerate(zip(last_guess.guess_letters, last_guess.guess_state)) if state == LetterState.MISPOSITIONED]
-            correct_letters = correct_letters | {letter for letter, state in zip(last_guess.guess_letters, last_guess.guess_state) if (state == LetterState.MISPOSITIONED)}
 
-            incorrect_letters = {letter for letter, state in zip(last_guess.guess_letters, last_guess.guess_state) if (state == LetterState.UNKNOWN) and (letter not in correct_letters)}
+            # Loop through guess
+            for position, (letter, state) in enumerate(zip(last_guess.guess_letters, last_guess.guess_state)):
+                
+                if state == LetterState.CORRECT:
+                    # Add to correct letters dict
+                    if letter not in self.correct_letters:
+                        self.correct_letters[letter] = position
+                
+                elif state == LetterState.MISPOSITIONED:
+                    # Add to mispositioned letters dict
+                    self.mispositioned_letters[letter].append(position)
+
+            correct_letters = self.correct_letters.keys() | self.mispositioned_letters.keys()
+
+            incorrect_letters = {
+                letter
+                for letter, state in zip(last_guess.guess_letters, last_guess.guess_state)
+                if (state == LetterState.UNKNOWN) and (letter not in correct_letters)
+            }
             self.incorrect_letters = self.incorrect_letters | incorrect_letters
 
-            #print(f"{letter_positions}, {mispositioned_letters}, {self.incorrect_letters}")
-            
             # TODO: Convert filtering into method
-            # TODO: Use filter method with method 
+            # TODO: Use filter method with method
             letter_matched_list = []
             for word in self.remaining_word_list:
-                
+
                 # Add error check for if word is too short
                 if len(word) != 5:
                     continue
@@ -57,36 +71,38 @@ class LetterMatchedRandomSolver:
 
                 # Check all letter in current word
                 is_word_matched = True
-                for letter, position in letter_positions:
+                for letter, position in self.correct_letters.items():
                     if word[position] != letter:
                         is_word_matched = False
+                        break
 
                 # Check all mispositioned letters
-                # if not all(letter in word for letter, position in mispositioned_letters):
-                #     is_word_matched = False
-                for letter, position in mispositioned_letters:
+                for letter, positions in self.mispositioned_letters.items():
                     if letter not in word:
                         is_word_matched = False
-                    elif word[position] == letter:
+                        break
+                    elif any(word[position] == letter for position in positions):
                         is_word_matched = False
+                        break
 
                 # Check all incorrect letters
                 if any(letter in word for letter in self.incorrect_letters):
                     is_word_matched = False
-                
+
                 # Append if check passed
                 if is_word_matched:
                     letter_matched_list.append(word)
-            
-            #print(f"Remaining possible words: {len(letter_matched_list)}")
+
+            # print(f"Remaining possible words: {len(letter_matched_list)}")
             self.remaining_word_list = letter_matched_list
-            
+
         # Return random word from filtered list
         return random.choice(list(self.remaining_word_list))
 
     def add_guess(self, guess: WordGuess) -> None:
         """Add guess to list of guesses"""
         self.guess_list.append(guess)
+
 
 if __name__ == "__main__":
 
@@ -109,10 +125,10 @@ if __name__ == "__main__":
         # Play game
         while not match.is_game_over():
             guess_str = guesser.create_guess()
-            print(guess_str)
+            # print(guess_str)
             guess = match.make_guess(guess_str)[-1]
-            #print(f"{guess}")
-            
+            print(f"{guess}")
+
             if guess is not None:
                 guesser.add_guess(guess)
     except Exception as e:
