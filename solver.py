@@ -37,11 +37,11 @@ class LetterMatchedRandomSolver:
 
             # Loop through guess
             for position, (letter, state) in enumerate(zip(last_guess.guess_letters, last_guess.guess_state)):
-                
+
                 if state == LetterState.CORRECT:
                     # Add to correct letters dict
                     self.correct_letters[letter].add(position)
-                
+
                 elif state == LetterState.MISPOSITIONED:
                     # Add to mispositioned letters dict
                     self.mispositioned_letters[letter].append(position)
@@ -130,6 +130,7 @@ if __name__ == "__main__":
             guess_str = guesser.create_guess()
             # print(guess_str)
             guess = match.make_guess(guess_str)[-1]
+            print(f"Remaining possible words: {len(guesser.remaining_word_list)}")
             print(f"{guess}")
 
             if guess is not None:
