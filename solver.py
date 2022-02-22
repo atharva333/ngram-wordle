@@ -59,48 +59,64 @@ class LetterMatchedRandomSolver:
             # print(self.mispositioned_letters)
             # print(self.incorrect_letters)
 
-            # TODO: Convert filtering into method
-            # TODO: Use filter method with method
-            letter_matched_list = []
-            for word in self.remaining_word_list:
-
-                # Add error check for if word is too short
-                if len(word) != 5:
-                    continue
-
-                # Check if word is same as the last guess
-                if word == last_guess.guess_letters:
-                    continue
-
-                # Check all letter in current word
-                is_word_matched = True
-                for letter, positions in self.correct_letters.items():
-                    if any(word[position] != letter for position in positions):
-                        is_word_matched = False
-                        break
-
-                # Check all mispositioned letters
-                for letter, positions in self.mispositioned_letters.items():
-                    if letter not in word:
-                        is_word_matched = False
-                        break
-                    elif any(word[position] == letter for position in positions):
-                        is_word_matched = False
-                        break
-
-                # Check all incorrect letters
-                if any(letter in word for letter in self.incorrect_letters):
-                    is_word_matched = False
-
-                # Append if check passed
-                if is_word_matched:
-                    letter_matched_list.append(word)
-
-            # print(f"Remaining possible words: {len(letter_matched_list)}")
-            self.remaining_word_list = letter_matched_list
+            self.filter_word_list(last_guess)
 
         # Return random word from filtered list
         return random.choice(list(self.remaining_word_list))
+
+    def filter_word_list(self, last_guess: WordGuess) -> List[str]:
+        """Filter word list based on last guess"""
+
+        letter_matched_list = []
+        for word in self.remaining_word_list:
+
+            # Add error check for if word is too short
+            if len(word) != 5:
+                continue
+
+            # Check if word is same as the last guess
+            if word == last_guess.guess_letters:
+                continue
+
+            # Check all letter in current word
+            if not self._check_correct_letters(word):
+                continue
+
+            # Check all mispositioned letters
+            if not self._check_mispositioned_letters(word):
+                continue
+
+            # Check all incorrect letters
+            if not self._check_incorrect_letters(word):
+                continue
+
+            # Add word to list
+            letter_matched_list.append(word)
+
+        # print(f"Remaining possible words: {len(letter_matched_list)}")
+        self.remaining_word_list = letter_matched_list
+
+    def _check_correct_letters(self, word: str) -> bool:
+        """Check if word contains all correct letters"""
+        for letter, positions in self.correct_letters.items():
+            if any(word[position] != letter for position in positions):
+                return False
+        return True
+
+    def _check_mispositioned_letters(self, word: str) -> bool:
+        """Check if word contains mispositioned letters in possible positions"""
+        for letter, positions in self.mispositioned_letters.items():
+            if letter not in word:
+                return False
+            elif any(word[position] == letter for position in positions):
+                return False
+        return True
+
+    def _check_incorrect_letters(self, word: str) -> bool:
+        """Check if word contains any incorrect letters"""
+        if any(letter in word for letter in self.incorrect_letters):
+            return False
+        return True
 
     def add_guess(self, guess: WordGuess) -> None:
         """Add guess to list of guesses"""
