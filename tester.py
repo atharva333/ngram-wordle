@@ -10,7 +10,7 @@ from util import read_word_file
 
 NUMBER_OF_GAMES = 5000
 
-if __name__ == "__main__":
+def main():
 
     filepath = "data/words_2315.txt"
     # Remove newline char and convert to set
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     # Track number of guesses for win
     match_guesses = []
 
-    for match_num in track(range(NUMBER_OF_GAMES), description="Playing matches..."):
+    for match_num in track(range(NUMBER_OF_GAMES), description=f"Playing {NUMBER_OF_GAMES} matches..."):
 
         # Create new match
         match = WordleMatch(max_guesses=6, word_list=words)
@@ -52,3 +52,7 @@ if __name__ == "__main__":
     print(f"Num guesses standard deviation: {np.std(match_guesses)}")
     print(np.histogram(match_guesses, bins=5))
     print(f"Time taken: {time.time() - start_time}")
+
+if __name__ == "__main__":
+
+    main()
