@@ -26,7 +26,7 @@ class LetterMatchedRandomSolver:
         self.remaining_word_list = list(word_list)
         self.guess_list = []
 
-        self.correct_letters = defaultdict(int)
+        self.correct_letters = defaultdict(set)
         self.mispositioned_letters = defaultdict(list)
         self.incorrect_letters = set()
 
@@ -40,8 +40,7 @@ class LetterMatchedRandomSolver:
                 
                 if state == LetterState.CORRECT:
                     # Add to correct letters dict
-                    if letter not in self.correct_letters:
-                        self.correct_letters[letter] = position
+                    self.correct_letters[letter].add(position)
                 
                 elif state == LetterState.MISPOSITIONED:
                     # Add to mispositioned letters dict
@@ -55,6 +54,10 @@ class LetterMatchedRandomSolver:
                 if (state == LetterState.UNKNOWN) and (letter not in correct_letters)
             }
             self.incorrect_letters = self.incorrect_letters | incorrect_letters
+
+            # print(self.correct_letters)
+            # print(self.mispositioned_letters)
+            # print(self.incorrect_letters)
 
             # TODO: Convert filtering into method
             # TODO: Use filter method with method
@@ -71,8 +74,8 @@ class LetterMatchedRandomSolver:
 
                 # Check all letter in current word
                 is_word_matched = True
-                for letter, position in self.correct_letters.items():
-                    if word[position] != letter:
+                for letter, positions in self.correct_letters.items():
+                    if any(word[position] != letter for position in positions):
                         is_word_matched = False
                         break
 
