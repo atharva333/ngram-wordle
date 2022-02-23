@@ -158,18 +158,18 @@ class SortedLetterMatchedSolver(LetterMatchedRandomSolver):
             # Prune word list based on filter criteria
             self.remaining_word_list = self.filter_word_list(last_guess)
         
-        if len(self.guess_list) > 1:
+        # if len(self.guess_list) > 1:
         
-            letter_counts = self.get_letter_counts(self.remaining_word_list)
-            word_scores = self.get_word_scores(self.remaining_word_list, letter_counts)
-            sorted_words = sorted(list(zip(self.remaining_word_list, word_scores)), key=lambda x: x[1], reverse=True)
-            print(sorted_words)
+        letter_counts = self.get_letter_counts(self.remaining_word_list)
+        word_scores = self.get_word_scores(self.remaining_word_list, letter_counts)
+        sorted_words = sorted(list(zip(self.remaining_word_list, word_scores)), key=lambda x: x[1], reverse=True)
+        # print(sorted_words[:10])
 
-            # Return random word from filtered list
-            return sorted_words[0][0]
+        # Return random word from filtered list
+        return sorted_words[0][0]
         
-        else:
-            return random.choice(self.remaining_word_list)
+        # else:
+        #     return random.choice(self.remaining_word_list)
 
     def get_letter_counts(self, words: List[str]) -> defaultdict(int):
         """Get letter counts for all words"""
@@ -188,7 +188,7 @@ class SortedLetterMatchedSolver(LetterMatchedRandomSolver):
     def get_word_scores(self, words: List[str], letter_counts: defaultdict(int)) -> List[int]:
         """Get word scores for all words based on letter counts"""
         # For each word sum the score of each letter
-        word_scores = [sum([letter_counts[letter] for letter in word]) for word in words]
+        word_scores = [sum([letter_counts[letter] for pos, letter in enumerate(word) if pos == word.index(letter)]) for word in words]
         return word_scores
 
 if __name__ == "__main__":
