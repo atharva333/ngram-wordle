@@ -35,34 +35,37 @@ class LetterMatchedRandomSolver:
         if self.guess_list:
             last_guess = self.guess_list[-1]
 
-            # Loop through guess
-            for position, (letter, state) in enumerate(zip(last_guess.guess_letters, last_guess.guess_state)):
+            # Update letter state dicts
+            self.update_letter_state_dicts(last_guess)
 
-                if state == LetterState.CORRECT:
-                    # Add to correct letters dict
-                    self.correct_letters[letter].add(position)
-
-                elif state == LetterState.MISPOSITIONED:
-                    # Add to mispositioned letters dict
-                    self.mispositioned_letters[letter].append(position)
-
-            correct_letters = self.correct_letters.keys() | self.mispositioned_letters.keys()
-
-            incorrect_letters = {
-                letter
-                for letter, state in zip(last_guess.guess_letters, last_guess.guess_state)
-                if (state == LetterState.UNKNOWN) and (letter not in correct_letters)
-            }
-            self.incorrect_letters = self.incorrect_letters | incorrect_letters
-
-            # print(self.correct_letters)
-            # print(self.mispositioned_letters)
-            # print(self.incorrect_letters)
-
+            # Prune word list based on filter criteria
             self.filter_word_list(last_guess)
 
         # Return random word from filtered list
         return random.choice(list(self.remaining_word_list))
+
+    def update_letter_state_dicts(self, last_guess: WordGuess) -> None:
+        """Update correct, mispositioned, incorrect letter collections"""
+
+        # Loop through guess
+        for position, (letter, state) in enumerate(zip(last_guess.guess_letters, last_guess.guess_state)):
+
+            if state == LetterState.CORRECT:
+                # Add to correct letters dict
+                self.correct_letters[letter].add(position)
+
+            elif state == LetterState.MISPOSITIONED:
+                # Add to mispositioned letters dict
+                self.mispositioned_letters[letter].append(position)
+
+        correct_letters = self.correct_letters.keys() | self.mispositioned_letters.keys()
+
+        incorrect_letters = {
+            letter
+            for letter, state in zip(last_guess.guess_letters, last_guess.guess_state)
+            if (state == LetterState.UNKNOWN) and (letter not in correct_letters)
+        }
+        self.incorrect_letters = self.incorrect_letters | incorrect_letters
 
     def filter_word_list(self, last_guess: WordGuess) -> List[str]:
         """Filter word list based on last guess"""
@@ -147,6 +150,10 @@ if __name__ == "__main__":
             # print(guess_str)
             guess = match.make_guess(guess_str)[-1]
             print(f"Remaining possible words: {len(guesser.remaining_word_list)}")
+
+            print(guesser.correct_letters)
+            print(guesser.mispositioned_letters)
+            print(guesser.incorrect_letters)
             print(f"{guess}")
 
             if guess is not None:
