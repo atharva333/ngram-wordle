@@ -1,13 +1,31 @@
 import random
 import time
 from typing import List, Set
-from game import LetterState, WordGuess, WordleMatch
-from util import read_word_file
-from rich import print
+from abc import ABC, abstractmethod
 from collections import defaultdict
+from rich import print
+
+from util import read_word_file
+from game import LetterState, WordGuess, WordleMatch
 
 
-class RandomSolver:
+class Solver(ABC):
+    """Abstract class for solver"""
+
+    def __init__(self, word_list: Set[str]) -> None:
+        pass
+
+    @abstractmethod
+    def create_guess(self) -> str:
+        """Create guess"""
+        raise NotImplementedError
+
+    def add_guess(self, guess: WordGuess) -> None:
+        """Add guess to list of guesses"""
+        self.guess_list.append(guess)
+
+
+class RandomSolver(Solver):
     def __init__(self, word_list: Set[str]) -> None:
         self.word_list = word_list
         self.guess_list = []
@@ -16,12 +34,8 @@ class RandomSolver:
         """Create random guess from word list"""
         return random.choice(list(self.word_list))
 
-    def add_guess(self, guess: WordGuess) -> None:
-        """Add guess to list of guesses"""
-        self.guess_list.append(guess)
 
-
-class LetterMatchedRandomSolver:
+class LetterMatchedRandomSolver(Solver):
     def __init__(self, word_list: Set[str]) -> None:
         self.remaining_word_list = list(word_list)
         self.guess_list = []
@@ -120,10 +134,6 @@ class LetterMatchedRandomSolver:
         if any(letter in word for letter in self.incorrect_letters):
             return False
         return True
-
-    def add_guess(self, guess: WordGuess) -> None:
-        """Add guess to list of guesses"""
-        self.guess_list.append(guess)
 
 
 if __name__ == "__main__":
