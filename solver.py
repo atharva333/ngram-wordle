@@ -53,7 +53,7 @@ class LetterMatchedRandomSolver(Solver):
             self.update_letter_state_dicts(last_guess)
 
             # Prune word list based on filter criteria
-            self.filter_word_list(last_guess)
+            self.remaining_word_list = self.filter_word_list(last_guess)
 
         # Return random word from filtered list
         return random.choice(list(self.remaining_word_list))
@@ -111,7 +111,7 @@ class LetterMatchedRandomSolver(Solver):
             letter_matched_list.append(word)
 
         # print(f"Remaining possible words: {len(letter_matched_list)}")
-        self.remaining_word_list = letter_matched_list
+        return letter_matched_list
 
     def _check_correct_letters(self, word: str) -> bool:
         """Check if word contains all correct letters"""
