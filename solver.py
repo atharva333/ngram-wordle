@@ -1,8 +1,11 @@
 import random
 import time
+import numpy as np
 from typing import List, Set
 from abc import ABC, abstractmethod
 from collections import defaultdict
+from sklearn.feature_extraction.text import CountVectorizer
+
 from rich import print
 
 from util import read_word_file
@@ -135,6 +138,58 @@ class LetterMatchedRandomSolver(Solver):
             return False
         return True
 
+class SortedLetterMatchedSolver(LetterMatchedRandomSolver):
+    def __init__(self, word_list: Set[str]) -> None:
+        self.remaining_word_list = list(word_list)
+        self.guess_list = []
+
+        self.correct_letters = defaultdict(set)
+        self.mispositioned_letters = defaultdict(list)
+        self.incorrect_letters = set()
+
+    def create_guess(self) -> str:
+        """Create guess from word list"""
+        if self.guess_list:
+            last_guess = self.guess_list[-1]
+
+            # Update letter state dicts
+            self.update_letter_state_dicts(last_guess)
+
+            # Prune word list based on filter criteria
+            self.remaining_word_list = self.filter_word_list(last_guess)
+        
+        if len(self.guess_list) > 1:
+        
+            letter_counts = self.get_letter_counts(self.remaining_word_list)
+            word_scores = self.get_word_scores(self.remaining_word_list, letter_counts)
+            sorted_words = sorted(list(zip(self.remaining_word_list, word_scores)), key=lambda x: x[1], reverse=True)
+            print(sorted_words)
+
+            # Return random word from filtered list
+            return sorted_words[0][0]
+        
+        else:
+            return random.choice(self.remaining_word_list)
+
+    def get_letter_counts(self, words: List[str]) -> defaultdict(int):
+        """Get letter counts for all words"""
+        # Calculate letter counts
+        letter_counts = defaultdict(int)
+        for word in words:
+            for letter in word:
+                letter_counts[letter] += 1
+
+        # Normalise letter counts
+        for letter in letter_counts.keys():
+            letter_counts[letter] /= len(words)
+
+        return letter_counts
+
+    def get_word_scores(self, words: List[str], letter_counts: defaultdict(int)) -> List[int]:
+        """Get word scores for all words based on letter counts"""
+        # For each word sum the score of each letter
+        word_scores = [sum([letter_counts[letter] for letter in word]) for word in words]
+        return word_scores
 
 if __name__ == "__main__":
 
@@ -147,7 +202,7 @@ if __name__ == "__main__":
     match = WordleMatch(max_guesses=6, word_list=words)
 
     # Create guesser
-    guesser = LetterMatchedRandomSolver(words)
+    guesser = SortedLetterMatchedSolver(words)
 
     start_time = time.time()
     print(f"Start time: {start_time}")
@@ -161,9 +216,9 @@ if __name__ == "__main__":
             guess = match.make_guess(guess_str)[-1]
             print(f"Remaining possible words: {len(guesser.remaining_word_list)}")
 
-            print(guesser.correct_letters)
-            print(guesser.mispositioned_letters)
-            print(guesser.incorrect_letters)
+            # print(guesser.correct_letters)
+            # print(guesser.mispositioned_letters)
+            # print(guesser.incorrect_letters)
             print(f"{guess}")
 
             if guess is not None:
