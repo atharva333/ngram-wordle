@@ -138,6 +138,7 @@ class LetterMatchedRandomSolver(Solver):
             return False
         return True
 
+
 class SortedLetterMatchedSolver(LetterMatchedRandomSolver):
     def __init__(self, word_list: Set[str]) -> None:
         self.remaining_word_list = list(word_list)
@@ -157,17 +158,25 @@ class SortedLetterMatchedSolver(LetterMatchedRandomSolver):
 
             # Prune word list based on filter criteria
             self.remaining_word_list = self.filter_word_list(last_guess)
-        
+
         # if len(self.guess_list) > 1:
-        
+
         letter_counts = self.get_letter_counts(self.remaining_word_list)
         word_scores = self.get_word_scores(self.remaining_word_list, letter_counts)
-        sorted_words = sorted(list(zip(self.remaining_word_list, word_scores)), key=lambda x: x[1], reverse=True)
+        sorted_words = sorted(
+            list(zip(self.remaining_word_list, word_scores)), key=lambda x: x[1], reverse=True
+        )
+        # sorted_scores = [score for _, score in sorted_words]
+        # sorted_elems = [word for word, _ in sorted_words]
+        # sorted_scores_prob = [score / sum(sorted_scores) for score in sorted_scores]
         # print(sorted_words[:10])
+        # print(sorted_scores_prob[:10])
 
         # Return random word from filtered list
         return sorted_words[0][0]
-        
+        # print(random.choices(sorted_words, weights=sorted_scores_prob)[0])
+        # return random.choices(sorted_words, weights=sorted_scores_prob, k=1)[0][0]
+
         # else:
         #     return random.choice(self.remaining_word_list)
 
@@ -188,12 +197,17 @@ class SortedLetterMatchedSolver(LetterMatchedRandomSolver):
     def get_word_scores(self, words: List[str], letter_counts: defaultdict(int)) -> List[int]:
         """Get word scores for all words based on letter counts"""
         # For each word sum the score of each letter
-        word_scores = [sum([letter_counts[letter] for pos, letter in enumerate(word) if pos == word.index(letter)]) for word in words]
+        # Check if letter is first occurrence of same letter in word
+        word_scores = [
+            sum([letter_counts[letter] for pos, letter in enumerate(word) if pos == word.index(letter)])
+            for word in words
+        ]
         return word_scores
+
 
 if __name__ == "__main__":
 
-    filepath = "data/words_2315.txt"
+    filepath = "data/words_12792.txt"
     # Remove newline char and convert to set
     words = set([word[:-1] for word in read_word_file(filepath=filepath)])
     print(len(words))
