@@ -1,7 +1,7 @@
 import random
 import time
 import numpy as np
-from typing import List, Set
+from typing import List, Set, DefaultDict
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from sklearn.feature_extraction.text import CountVectorizer
@@ -162,6 +162,8 @@ class SortedLetterMatchedSolver(LetterMatchedRandomSolver):
         # if len(self.guess_list) > 1:
 
         letter_counts = self.get_letter_counts(self.remaining_word_list)
+        position_letter_counts = self.get_position_letter_counts(self.remaining_word_list)
+        print(position_letter_counts)
         word_scores = self.get_word_scores(self.remaining_word_list, letter_counts)
         sorted_words = sorted(
             list(zip(self.remaining_word_list, word_scores)), key=lambda x: x[1], reverse=True
@@ -180,7 +182,7 @@ class SortedLetterMatchedSolver(LetterMatchedRandomSolver):
         # else:
         #     return random.choice(self.remaining_word_list)
 
-    def get_letter_counts(self, words: List[str]) -> defaultdict(int):
+    def get_letter_counts(self, words: List[str]) -> DefaultDict[str, int]:
         """Get letter counts for all words"""
         # Calculate letter counts
         letter_counts = defaultdict(int)
@@ -193,6 +195,14 @@ class SortedLetterMatchedSolver(LetterMatchedRandomSolver):
             letter_counts[letter] /= len(words)
 
         return letter_counts
+
+    def get_position_letter_counts(self, words: List[str]) -> List[DefaultDict[str, int]]:
+        """Get letter counts for each position"""
+        position_letter_counts = [defaultdict(int) for letter in words[0]]
+        for word in words:
+            for position, letter in enumerate(word):
+                position_letter_counts[position][letter] += 1
+        return position_letter_counts
 
     def get_word_scores(self, words: List[str], letter_counts: defaultdict(int)) -> List[int]:
         """Get word scores for all words based on letter counts"""
