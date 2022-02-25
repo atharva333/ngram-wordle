@@ -4,7 +4,7 @@ import numpy as np
 from rich.progress import track
 from rich.console import Console
 
-from solver import LetterMatchedRandomSolver
+from solver import LetterMatchedRandomSolver, SortedLetterMatchedSolver
 from game import WordleMatch
 from util import read_word_file
 
@@ -28,7 +28,7 @@ def main():
 
         # Create new match
         match = WordleMatch(max_guesses=6, word_list=words)
-        guesser = LetterMatchedRandomSolver(words)
+        guesser = SortedLetterMatchedSolver(words)
 
         try:
             # Play game
