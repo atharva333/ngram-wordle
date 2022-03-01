@@ -214,6 +214,9 @@ class SortedLetterMatchedSolver(LetterMatchedRandomSolver):
         ]
         return word_scores
 
+class NgramLetterSolver(LetterMatchedRandomSolver):
+    def __init(self):
+        pass
 
 if __name__ == "__main__":
 
