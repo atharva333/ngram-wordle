@@ -1,5 +1,5 @@
 import time
-import random
+import sys
 import numpy as np
 from rich.progress import track
 from rich.console import Console
@@ -11,11 +11,10 @@ from util import read_word_file
 NUMBER_OF_GAMES = 5000
 
 
-def main():
+def main(word_filepath: str):
 
-    filepath = "data/words_2315.txt"
     # Remove newline char and convert to set
-    words = set([word[:-1] for word in read_word_file(filepath=filepath)])
+    words = set([word[:-1] for word in read_word_file(filepath=word_filepath)])
     print(len(words))
 
     start_time = time.time()
@@ -54,11 +53,13 @@ def main():
     match_guesses = np.array(match_guesses)
     print(f"Won {len(match_guesses)} out of {NUMBER_OF_GAMES} matches")
     print(f"Mean num guesses: {np.mean(match_guesses)}")
-    print(f"Num guesses standard deviation: {np.std(match_guesses)}")
-    print(np.histogram(match_guesses, bins=5))
+    # print(f"Num guesses standard deviation: {np.std(match_guesses)}")
+    # print(np.histogram(match_guesses, bins=5))
     print(f"Time taken: {time.time() - start_time}")
 
 
 if __name__ == "__main__":
 
-    main()
+    word_filepath = sys.argv[1]
+
+    main(word_filepath=word_filepath)
