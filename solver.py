@@ -163,24 +163,14 @@ class SortedLetterMatchedSolver(LetterMatchedRandomSolver):
 
         letter_counts = self.get_letter_counts(self.remaining_word_list)
         position_letter_counts = self.get_position_letter_counts(self.remaining_word_list)
-        print(position_letter_counts)
+
         word_scores = self.get_word_scores(self.remaining_word_list, letter_counts)
         sorted_words = sorted(
             list(zip(self.remaining_word_list, word_scores)), key=lambda x: x[1], reverse=True
         )
-        # sorted_scores = [score for _, score in sorted_words]
-        # sorted_elems = [word for word, _ in sorted_words]
-        # sorted_scores_prob = [score / sum(sorted_scores) for score in sorted_scores]
-        # print(sorted_words[:10])
-        # print(sorted_scores_prob[:10])
 
-        # Return random word from filtered list
+        # Return top word from filtered list
         return sorted_words[0][0]
-        # print(random.choices(sorted_words, weights=sorted_scores_prob)[0])
-        # return random.choices(sorted_words, weights=sorted_scores_prob, k=1)[0][0]
-
-        # else:
-        #     return random.choice(self.remaining_word_list)
 
     def get_letter_counts(self, words: List[str]) -> DefaultDict[str, int]:
         """Get letter counts for all words"""
@@ -242,11 +232,6 @@ if __name__ == "__main__":
             # print(guess_str)
             guess = match.make_guess(guess_str)[-1]
             print(f"Remaining possible words: {len(guesser.remaining_word_list)}")
-
-            # print(guesser.correct_letters)
-            # print(guesser.mispositioned_letters)
-            # print(guesser.incorrect_letters)
-            print(f"{guess}")
 
             if guess is not None:
                 guesser.add_guess(guess)
