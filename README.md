@@ -11,6 +11,10 @@ Game will finish when the correct word is guessed or when the player reaches 6 i
 
 ### Running the tester
 
+The tester is used to automatically run many games given a particular solver class. The number of games won, average number of guesses and the time taken to play the games are shown. Run using ```python tester.py [WORD_LIST_FILEPATH]``` where the first argument points to the filepath for the words list.    
+
+![](images/tester.png)
+
 ### Create wordle solver using ngrams
 - [x] Read file of all possible 5 letter words
 - [x] Write wordle game logic, enum for guess states
