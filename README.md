@@ -1,17 +1,17 @@
-# Ngram-wordle
+# wordle-pysolver
 
 ### Playing the game manually   
 
 Running ```python game.py``` will start a manual game with a randomly selected word (from the 2315 words list).
 
 Guessing valid 5 letters words will show the result of each guess.
-Game will finish when the correct word is guessed or when the player reaches 6 incorrect guesses.  
+The Game will finish when the correct word is guessed or when the player reaches 6 incorrect guesses.  
 
 ![](images/play.png)
 
 ### Running the tester
 
-The tester is used to automatically run many games given a particular solver class. The number of games won, average number of guesses and the time taken to play the games are shown. Run using ```python tester.py [WORD_LIST_FILEPATH]``` where the first argument points to the filepath for the words list.    
+The tester is used to automatically run many games given a particular solver class (found in ```solver.py```). The number of games won, average number of guesses and the time taken to play the games are shown. Run using ```python tester.py [WORD_LIST_FILEPATH]``` where the first argument points to the filepath for the words list.    
 
 ![](images/tester.png)
 
