@@ -22,4 +22,3 @@ The tester is used to automatically run many games given a particular solver cla
 - [x] Score word list by frequency of letters
 - [ ] Score based on position of letter
 - [ ] Use ngrams for sorting 
-- [ ] Create RL game framework
