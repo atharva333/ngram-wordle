@@ -1,5 +1,10 @@
 # wordle-pysolver
 
+### Decription
+
+Mini side project to create the wordle game and a simple solver with the word list as input.
+Exploring the use of ```rich``` python library and specific python3 features such as type hints.
+
 ### Playing the game manually   
 
 Running ```python game.py``` will start a manual game with a randomly selected word (from the 2315 words list).
@@ -15,7 +20,7 @@ The tester is used to automatically run many games given a particular solver cla
 
 ![](images/tester.png)
 
-### Create wordle solver using ngrams
+### Create wordle solver
 - [x] Read file of all possible 5 letter words
 - [x] Write wordle game logic, enum for guess states
 - [x] Develop pruning word list algorithm for playing game, starting off with random
