@@ -1,6 +1,6 @@
 # wordle-pysolver
 
-### Decription
+### Description
 
 Mini side project to create the wordle game and a simple solver with the word list as input.
 Exploring the use of ```rich``` python library and specific python3 features such as type hints.
